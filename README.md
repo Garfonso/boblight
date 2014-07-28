@@ -48,7 +48,38 @@ If you want to install boblight to your system run the following command:
 
 Then follow the guide in the Wiki to [automatically start boblightd](https://github.com/arvydas/boblight/wiki/Automatically-starting-boblightd-on-Linux) when OS starts.
 
-=== Windows
+### OSX
+
+Prepare the build environment
+
+	brew install autoconf automake libtool libusb git
+
+Clone this repository
+
+	git clone http://github.com/arvydas/boblight
+
+Change directory
+
+  cd boblight
+	
+Run the following commands to set up build environment and build boblight
+
+	./autogen.sh
+	./configure --without-x11 --without-portaudio
+	make
+	
+Set up your configuration file as described in the [Boblight wiki](https://code.google.com/p/boblight/wiki/boblightconf). 
+Sample configuration files for BlinkStick are available in the ./conf subdirectory of the source code repository.
+
+Run boblightd by issuing the following command
+
+	./src/boblightd
+
+Alternatively you can supply your own config file manually, for example
+
+	./src/boblightd -c ./conf/blinkstick.conf
+
+### Windows
 
 Building under Windows requires Cygwin environment. Prepare it by installing [Cygwin](https://www.cygwin.com/) together with the following additional packages
 
