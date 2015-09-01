@@ -11,8 +11,8 @@ AUTOMAKE=${AUTOMAKE:-automake}
 LIBTOOLIZE=${LIBTOOLIZE:-libtoolize}
 
 set -ex
-"$ACLOCAL"
 "$LIBTOOLIZE"
+"$ACLOCAL"
 "$AUTOHEADER"
 "$AUTOCONF"
 "$AUTOMAKE" --add-missing --copy
