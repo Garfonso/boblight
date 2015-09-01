@@ -99,10 +99,6 @@ boblightd_SOURCES += device/deviceibelight.cpp \
 boblightd_LDFLAGS += -lusb-1.0
 endif
 
-if WINDOWS_HOST
-boblightd_LDFLAGS += -lhid -lsetupapi
-endif
-
 if HAVE_OLA
 boblightd_SOURCES += device/deviceola.cpp
 boblightd_LDFLAGS += -lola -lolacommon -lprotobuf
