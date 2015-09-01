@@ -14,31 +14,31 @@ This is Boblight repository based on [Boblight](https://code.google.com/p/boblig
 
 Prepare the build environment
 
-	$sudo apt-get install -y build-essential autoconf libtool libusb-1.0-0-dev portaudio19-dev git 
+	sudo apt-get install -y build-essential autoconf libtool libusb-1.0-0-dev portaudio19-dev git 
 
 Clone this repository
 
-	$git clone http://github.com/arvydas/boblight
+	git clone http://github.com/arvydas/boblight
 
 Change directory
 
-    $cd boblight
+    cd boblight
 	
 Run the following commands to set up build environment and build boblight
 
-	$./autogen.sh
-	$./configure --without-x11 --prefix=/usr
-	$make
+	./autogen.sh
+	./configure --without-x11 --prefix=/usr
+	make
 	
 Set up your configuration file as described in the [Boblight wiki](https://code.google.com/p/boblight/wiki/boblightconf). 
 
 Run boblightd by issuing the following command
 
-	$./src/boblightd
+	./src/boblightd
 
 Alternatively you can supply your own config file manually, for example
 
-	$./src/boblightd -c ./conf/lightpack.conf
+	./src/boblightd -c ./conf/lightpack.conf
 
 Alternatively you can run boblightd with sudo.
 
@@ -62,27 +62,27 @@ Building under Windows requires Cygwin environment. Prepare it by installing [Cy
 
 Open Cygwin shell and clone this repository
 
-	$git clone http://github.com/arvydas/boblight
+	git clone http://github.com/arvydas/boblight
 
 Change directory
 
-    $cd boblight
+    cd boblight
 	
 Run the following commands to set up build environment and build boblight
 
-	$./autogen.sh
-	$./configure --without-portaudio --without-x11
-	$make
+	./autogen.sh
+	./configure --without-portaudio --without-x11
+	make
 
 Set up your configuration file as described in the [Boblight wiki](https://code.google.com/p/boblight/wiki/boblightconf). 
 
 You can run boblightd.exe from the Cygwin environment by executing the following command
 
-	$./src/boblightd.exe
+	./src/boblightd.exe
 
 Alternatively you can supply your own config file manually, for example
 
-	$./src/boblightd.exe -c ./conf/lightpack.conf
+	./src/boblightd.exe -c ./conf/lightpack.conf
 
 If you want to run Boblightd.exe as standalone application without Cygwin environment, you will need the following files
 
