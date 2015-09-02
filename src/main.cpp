@@ -30,7 +30,9 @@
 #include "device/device.h"
 #include "config.h"
 
+#ifndef DEFAULTCONF
 #define DEFAULTCONF "/etc/boblight.conf"
+#endif
 
 using namespace std;
 
