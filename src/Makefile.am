@@ -5,8 +5,7 @@ AUTOMAKE_OPTIONS = subdir-objects
 AM_CPPFLAGS = 
 
 AM_CFLAGS =\
-	 -Wall \
-	 -g
+	 -Wall
 
 bin_PROGRAMS = boblightd \
 	boblight-constant
