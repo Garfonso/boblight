@@ -34,6 +34,10 @@
 #define DEFAULTCONF "/etc/boblight.conf"
 #endif
 
+#ifndef DEFAULTLOG
+#define DEFAULTLOG "/var/log/boblightd.log"
+#endif
+
 using namespace std;
 
 volatile bool g_stop = false;
@@ -63,7 +67,7 @@ int main (int argc, char *argv[])
   }
   
   //init our logfile
-  SetLogFile("boblightd.log");
+  SetLogFile(DEFAULTLOG);
   PrintFlags(argc, argv);
 
   //set up signal handlers
