@@ -67,18 +67,27 @@ bool InitLog(string filename, ofstream& logfile)
     return false;
   }
   
-  string directory = static_cast<string>(getenv("HOME")) + "/.boblight/";
-  string fullpath = directory + filename;
+  string fullpath;
 
-  //try to make the directory the log goes in
-  if (mkdir(directory.c_str(), S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH) == -1)
+  if (filename.find("/") != string::npos)
   {
-    //if it already exists we're ok
-    if (errno != EEXIST)
+    string directory = static_cast<string>(getenv("HOME")) + "/.boblight/";
+    fullpath = directory + filename;
+
+    //try to make the directory the log goes in
+    if (mkdir(directory.c_str(), S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH) == -1)
     {
-      PrintError("unable to make directory " + directory + ":\n" + GetErrno());
-      return false;
+      //if it already exists we're ok
+      if (errno != EEXIST)
+      {
+        PrintError("unable to make directory " + directory + ":\n" + GetErrno());
+        return false;
+      }
     }
+  }
+  else
+  {
+    fullpath = filename;
   }
 
   //we keep around 5 old logfiles
