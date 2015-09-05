@@ -69,7 +69,7 @@ bool InitLog(string filename, ofstream& logfile)
   
   string fullpath;
 
-  if (filename.find("/") != string::npos)
+  if (filename.find("/") == string::npos)
   {
     string directory = static_cast<string>(getenv("HOME")) + "/.boblight/";
     fullpath = directory + filename;
