@@ -20,7 +20,7 @@
 
 CThread::CThread()
 {
-  m_thread = NULL;
+  m_thread = (pthread_t)NULL;
   m_running = false;
 }
 
@@ -63,7 +63,7 @@ void CThread::JoinThread()
   if (m_thread)
   {
     pthread_join(m_thread, NULL);
-    m_thread = NULL;
+    m_thread = (pthread_t)NULL;
   }
 }
 
