@@ -39,12 +39,13 @@ AC_CHECK_LIB(portaudio,[main],[
 ])
 AM_CONDITIONAL(HAVE_PORTAUDIO, [test "x$with_portaudio" = xyes])
 
-AC_ARG_WITH([libusb], [AS_HELP_STRING([--without-libusb], [Disable libusb support (no support for iBeLight)])], [],
+AC_ARG_WITH([libusb], [AS_HELP_STRING([--without-libusb], [Disable libusb support (no support for iBeLight and Lightpack)])], [],
             [with_libusb=check])
 AS_IF([test "x$with_libusb" != xno], [
-AC_CHECK_LIB([usb-1.0],[main],AC_DEFINE([HAVE_LIBUSB], [1], [ ]))
-AC_CHECK_LIB([usb-1.0],[libusb_error_name],AC_DEFINE([HAVE_LIBUSB_ERROR_NAME], [1], [ ]))
-AC_CHECK_HEADERS([libusb-1.0/libusb.h],[],[AC_MSG_ERROR([Missing a required header, please install it])])
+  AC_CHECK_LIB([usb-1.0],[main],AC_DEFINE([HAVE_LIBUSB], [1], [ ]))
+  AC_CHECK_LIB([usb-1.0],[libusb_error_name],AC_DEFINE([HAVE_LIBUSB_ERROR_NAME], [1], [ ]))
+  AC_CHECK_HEADERS([libusb-1.0/libusb.h],[],[AC_MSG_ERROR([Missing a required header, please install it])])
+  with_libusb=yes
 ])
 AM_CONDITIONAL(HAVE_LIBUSB, [test "x$with_libusb" = xyes])
 
