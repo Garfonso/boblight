@@ -1,6 +1,13 @@
 /*
  * boblight
  * Copyright (C) Bob  2009 
+ * --------------------------
+ * Modified by werkkrew (Bryan Chain) to add compatibility with newer
+ * versions of ffmpeg.
+ *
+ * Fixes deal with deprecation of AVFormatParams for AVDictionary 
+ * as well as a fix dealing with the old hard-coded video framerate.
+ * --------------------------
  * 
  * boblight is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -14,6 +21,10 @@
  * 
  * You should have received a copy of the GNU General Public License along
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Edited by Bryan Chain (werkkrew) to update functionality with newer FFMPEG Libraries
+ * This version has no backwards compatibility with older FFMPEG Libraries!
+ *
  */
 
 #include "flagmanager-v4l.h"
@@ -30,6 +41,7 @@
 #include <sys/ioctl.h>
 #include <fcntl.h>
 #include <linux/videodev2.h>
+#include <unistd.h>
 
 extern CFlagManagerV4l g_flagmanager;
 
@@ -65,15 +77,24 @@ void CVideoGrabber::Setup()
   AVInputFormat* inputformat;
 
   memset(&m_formatparams, 0, sizeof(m_formatparams));
-
-  //set up the format we want
-  m_formatparams.time_base.num = 1;
-  m_formatparams.time_base.den = 60;
-  m_formatparams.channel = g_flagmanager.m_channel;
-  m_formatparams.width = g_flagmanager.m_width;
-  m_formatparams.height = g_flagmanager.m_height;
-  m_formatparams.standard = g_flagmanager.m_standard;
-  m_formatparams.pix_fmt = PIX_FMT_BGR24;
+  char buf[1024];
+  AVDictionary *m_formatparams = NULL;
+ 
+  if(g_flagmanager.m_framerate!=NULL){
+	printf("Framerate was set: %d\n",g_flagmanager.m_framerate); 
+  	snprintf(buf, sizeof(buf), "%d/%d", g_flagmanager.m_framerate, 1);
+  	av_dict_set(&m_formatparams, "framerate", buf, 0);
+  }
+  
+  snprintf(buf, sizeof(buf), "%d", g_flagmanager.m_channel);
+  av_dict_set(&m_formatparams, "channel", buf, 0);
+  
+  snprintf(buf, sizeof(buf), "%dx%d", g_flagmanager.m_width, g_flagmanager.m_height); 
+  av_dict_set(&m_formatparams, "video_size", buf, 0);
+  
+  av_dict_set(&m_formatparams, "standard", g_flagmanager.m_standard, 0);
+  
+  av_dict_set(&m_formatparams, "pixel_format", av_get_pix_fmt_name(PIX_FMT_BGR24), 0);
 
   //open with custom codec when requested
   if (!g_flagmanager.m_customcodec.empty())
@@ -82,7 +103,7 @@ void CVideoGrabber::Setup()
     if (!inputformat)
       throw string ("Format " + g_flagmanager.m_customcodec + " not found");
 
-    returnv = av_open_input_file(&m_formatcontext, g_flagmanager.m_device.c_str(), inputformat, 0, &m_formatparams);    
+    returnv = avformat_open_input(&m_formatcontext, g_flagmanager.m_device.c_str(), inputformat, &m_formatparams);    
     if (returnv)
       throw string ("Unable to open " + g_flagmanager.m_device);
   }
@@ -93,7 +114,7 @@ void CVideoGrabber::Setup()
     returnv = -1;
     if (inputformat) //try to open as video4linux2 when available
     {
-      returnv = av_open_input_file(&m_formatcontext, g_flagmanager.m_device.c_str(), inputformat, 0, &m_formatparams);
+      returnv = avformat_open_input(&m_formatcontext, g_flagmanager.m_device.c_str(), inputformat, &m_formatparams);
     }
 
     if (returnv) //failed, try to open as video4linux instead
@@ -102,18 +123,18 @@ void CVideoGrabber::Setup()
       if (!inputformat)
         throw string ("Unable to open " + g_flagmanager.m_device);
 
-      returnv = av_open_input_file(&m_formatcontext, g_flagmanager.m_device.c_str(), inputformat, 0, &m_formatparams);
+      returnv = avformat_open_input(&m_formatcontext, g_flagmanager.m_device.c_str(), inputformat, &m_formatparams);
 
       if (returnv)
         throw string ("Unable to open " + g_flagmanager.m_device);
     }
   }
 
-  if(av_find_stream_info(m_formatcontext) < 0)
+  if(avformat_find_stream_info(m_formatcontext,0) < 0)
     throw string ("Unable to find stream info");
 
   //print our format to stdout
-  dump_format(m_formatcontext, 0, g_flagmanager.m_device.c_str(), false);
+  av_dump_format(m_formatcontext, 0, g_flagmanager.m_device.c_str(), false);
 
   //try to find the video stream
   m_videostream = -1;
@@ -135,7 +156,7 @@ void CVideoGrabber::Setup()
   if (!m_codec)
     throw string("Unable to find a codec");
 
-  returnv = avcodec_open(m_codeccontext, m_codec);
+  returnv = avcodec_open2(m_codeccontext, m_codec, 0);
   if (returnv < 0)
     throw string("Unable to open codec");
 
@@ -372,7 +393,7 @@ void CVideoGrabber::Cleanup()
 
   if (m_formatcontext)
   {
-    av_close_input_file(m_formatcontext);
+    avformat_close_input(&m_formatcontext);
     m_formatcontext = NULL;
   }
 

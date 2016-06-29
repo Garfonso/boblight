@@ -1,6 +1,8 @@
 /*
  * boblight
  * Copyright (C) Bob  2009 
+ * Modified by werkkrew (Bryan Chain) to add compatibility with newer
+ * versions of ffmpeg.
  * 
  * boblight is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -14,6 +16,10 @@
  * 
  * You should have received a copy of the GNU General Public License along
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Edited by Bryan Chain (werkkrew) to update functionality with newer FFMPEG Libraries
+ * This version has no backwards compatibility with older FFMPEG Libraries!
+ *
  */
 
 #ifndef VIDEOGRABBER
@@ -42,6 +48,7 @@ extern "C"
 #include <libavformat/avformat.h>
 #include <libswscale/swscale.h>
 #include <libavdevice/avdevice.h>
+#include <libavutil/pixdesc.h>
 }
 
 #include <string>
@@ -59,7 +66,7 @@ class CVideoGrabber
     std::string GetError() { return m_error; }
     
   private:
-    AVFormatParameters m_formatparams;
+    AVDictionary*      m_formatparams;
     AVFormatContext*   m_formatcontext;
     int                m_videostream;
 
