@@ -36,6 +36,7 @@ autom4te.cache
 /src/boblightd
 /src/boblight-X11
 /src/boblight-constant
+/src/boblight-v4l
 .deps
 .dirstamp
 ltmain.sh
